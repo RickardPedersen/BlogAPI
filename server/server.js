@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
-const port = 8080
+const port = 7070
 
-
+let cors = require('cors')
+app.use(cors())
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
@@ -22,6 +23,7 @@ app.use('/', deleteBlogPost)
 app.use('/', postComment)
 
 //for client part
+/*
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header(
@@ -30,7 +32,7 @@ app.use(function(req, res, next) {
     );
     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
     next();
-  });
+  });*/
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`)
