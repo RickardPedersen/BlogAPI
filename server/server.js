@@ -9,7 +9,13 @@ app.use(express.urlencoded({ extended: true }))
 
 //routes
 const getBlogPosts = require('./routes/getBlogPosts')
+const getBlogPost = require('./routes/getBlogPost')
+const postBlogPost = require('./routes/postBlogPost')
+const putBlogPost = require('./routes/putBlogPost')
 app.use('/', getBlogPosts)
+app.use('/', getBlogPost)
+app.use('/', postBlogPost)
+app.use('/', putBlogPost)
 
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -27,50 +33,9 @@ app.get('/', (req, res) => {
 
 
 
-app.get('/blog/:id', async (req, res) => {
-    try {
-        let blogPost = await db.posts.findOne({ _id: req.params.id})
-        let comments = await db.comments.find({ blogPostId: req.params.id})
 
-        if (blogPost) {
-            let resObj = {
-                blogPost,
-                comments
-            }
-    
-            res.status(200).json(resObj)
-        } else {
-            res.status(404).send('Not Found')
-        }   
-    } catch (error) {
-        console.log(error)
-        res.status(500).send('Internal Server Error')
-    }
-})
 
-app.post('/blog/post', async (req, res) => {
-    try {
 
-        if (req.body.hasOwnProperty('title') &&
-            req.body.hasOwnProperty('content') &&
-            typeof req.body.title === 'string'&&
-            typeof req.body.content === 'string'
-            ) {
-            let blogPost = {
-                title: req.body.title,
-                content: req.body.content
-            }
-
-            let newPost = await db.posts.insert(blogPost)
-            res.status(201).send('Created')
-        } else {
-            res.status(400).send('Bad Request')
-        }
-    } catch (error) {
-        console.log(error)
-        res.status(500).send('Internal Server Error')
-    }
-})
 
 app.post('/blog/comment/post', async (req, res) => {
     try {
@@ -99,35 +64,7 @@ app.post('/blog/comment/post', async (req, res) => {
     }
 })
 
-app.put('/blog/put/:id', async (req, res) => {
-    try {
 
-        if (req.body.hasOwnProperty('title') &&
-            req.body.hasOwnProperty('content') &&
-            typeof req.body.title === 'string'&&
-            typeof req.body.content === 'string'
-            ) {
-
-            let updatedPost = {
-                title: req.body.title,
-                content: req.body.content
-            }
-            
-            let updPost = await db.posts.update({ _id: req.params.id }, updatedPost)
-
-            if (updPost !== 0) {
-                res.status(200).send('OK')
-            } else {
-                res.status(404).send('Not Found')
-            }
-        } else {
-            res.status(400).send('Bad Request')
-        }
-    } catch (error) {
-        console.log(error)
-        res.status(500).send('Internal Server Error')
-    }
-})
 
 app.delete('/blog/delete/:id', async (req, res) => {
     try {

@@ -2,7 +2,6 @@ const {get} = require('../models/getBlogPosts.js')
 
 module.exports = {
     resCallback: async (req, res) => {
-        console.log('AKLJSDHLAKSJDH')
         let results = await get()
 
         if (results) {
