@@ -1,7 +1,7 @@
 const Datastore = require('nedb-promises')
 let db = {}
-db.posts = Datastore.create('database/posts')
-db.comments = Datastore.create('database/comments')
+db.posts = Datastore.create('server/database/posts')
+db.comments = Datastore.create('server/database/comments')
 db.posts.load()
 db.comments.load()
 
