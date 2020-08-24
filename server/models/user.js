@@ -1,9 +1,9 @@
 const db = require('../database/dbSetup')
 
 module.exports = {
-    async getAllPosts(filter) {
+    async getAllUsers() {
         try {
-            let result = await db.post.find(filter)
+            let result = await db.user.find({})
             console.log(result)
             return result
         } catch (error) {
@@ -11,19 +11,19 @@ module.exports = {
             return false
         }
     },
-    async getPost(id) {
+    async getUser(id) {
         try {
-            let blogPost = await db.post.findOne({ _id: id})
+            let user = await db.user.findOne({ _id: id})
 
-            return blogPost 
+            return user 
         } catch (error) {
             console.log(error)
             return false
         }
     },
-    async addPost(blogPost) {
+    async addUser(user) {
         try {
-            await db.post.create(blogPost)
+            await db.user.create(user)
 
             return true
         } catch (error) {
@@ -31,9 +31,9 @@ module.exports = {
             return false
         }
     },
-    async editPost(id, updatedPost) {
+    async editUser(id, updatedUser) {
         try {
-            let updPost = await db.post.updateOne({ _id: id },{ $set: updatedPost })
+            let updPost = await db.user.updateOne({ _id: id },{ $set: updatedUser })
 
             return updPost.n
         } catch (error) {
@@ -41,11 +41,11 @@ module.exports = {
             return false
         }
     },
-    async deletePost(id) {
+    async deleteUser(id) {
         try {
-            let delPost = await db.post.deleteOne({ _id: id })
+            let delUsers = await db.user.deleteOne({ _id: id })
 
-            return delPost.n
+            return delUsers.n
             
         } catch (error) {
             console.log(error)

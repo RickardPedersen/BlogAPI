@@ -3,7 +3,7 @@ const { getAllComments } = require('../models/comment')
 
 module.exports = {
     getAllPosts: async (req, res) => {
-        let results = await model.getAllPosts()
+        let results = await model.getAllPosts({})
 
         if (results) {
             res.status(200).json(results)
