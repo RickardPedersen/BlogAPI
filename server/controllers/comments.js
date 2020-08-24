@@ -2,7 +2,8 @@ const model = require('../models/comments.js')
 
 module.exports = {
     getAllComments: async (req, res) => {
-        let results = await model.getAllComments()
+        let filter = {}
+        let results = await model.getAllComments(filter)
 
         if (results) {
             res.status(200).json(results)

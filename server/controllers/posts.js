@@ -1,4 +1,5 @@
 const model = require('../models/posts.js')
+const { getAllComments } = require('../models/comments')
 
 module.exports = {
     getAllPosts: async (req, res) => {
@@ -20,6 +21,15 @@ module.exports = {
         } else {
             res.status(404).send('Not Found')
         } 
+    },
+    getPostComments: async (req, res) => {
+        let comments = await getAllComments({ blogPostId: req.params.id })
+
+        if (comments) {
+            res.status(200).json(comments)
+        } else {
+            res.status(404).send('Not Found')
+        }
     },
     addPost: async (req, res) => {
         if (req.body.hasOwnProperty('title') &&

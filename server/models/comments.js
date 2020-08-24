@@ -1,9 +1,9 @@
 const db = require('../database/dbSetup')
 
 module.exports = {
-    async getAllComments() {
+    async getAllComments(filter) {
         try {
-            let result = await db.comments.find({})
+            let result = await db.comments.find(filter)
             console.log(result)
             return result
         } catch (error) {
