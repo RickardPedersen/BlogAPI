@@ -23,17 +23,17 @@ module.exports = {
         } 
     },
     addComment: async (req, res) => {
-        if (req.body.hasOwnProperty('name') &&
-            req.body.hasOwnProperty('comment') &&
-            req.body.hasOwnProperty('blogPostId') &&
-            typeof req.body.name === 'string'&&
-            typeof req.body.blogPostId === 'string'&&
-            typeof req.body.comment === 'string'
+        if (req.body.hasOwnProperty('text') &&
+            req.body.hasOwnProperty('postId') &&
+            req.body.hasOwnProperty('userId') &&
+            typeof req.body.text === 'string'&&
+            typeof req.body.postId === 'string'&&
+            typeof req.body.userId === 'string'
             ) {
             let comment = {
-                name: req.body.name,
-                comment: req.body.comment,
-                blogPostId: req.body.blogPostId
+                text: req.body.text,
+                postId: req.body.postId,
+                userId: req.body.userId
             }
 
             let success = await model.addComment(comment)
@@ -48,15 +48,12 @@ module.exports = {
         } 
     },
     editComment: async (req, res) => {
-        if (req.body.hasOwnProperty('name') &&
-            req.body.hasOwnProperty('comment') &&
-            typeof req.body.name === 'string'&&
-            typeof req.body.comment === 'string'
+        if (req.body.hasOwnProperty('text') &&
+            typeof req.body.text === 'string'
             ) {
 
             let updatedComment = {
-                name: req.body.name,
-                comment: req.body.comment
+                text: req.body.text,
             }
 
             let updPost = await model.editComment(req.params.id, updatedComment)

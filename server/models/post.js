@@ -3,7 +3,7 @@ const db = require('../database/dbSetup')
 module.exports = {
     async getAllPosts() {
         try {
-            let result = await db.posts.find({})
+            let result = await db.post.find({})
             console.log(result)
             return result
         } catch (error) {
@@ -13,7 +13,7 @@ module.exports = {
     },
     async getPost(id) {
         try {
-            let blogPost = await db.posts.findOne({ _id: id})
+            let blogPost = await db.post.findOne({ _id: id})
 
             return blogPost 
         } catch (error) {
@@ -23,7 +23,7 @@ module.exports = {
     },
     async addPost(blogPost) {
         try {
-            await db.posts.insert(blogPost)
+            await db.post.create(blogPost)
 
             return true
         } catch (error) {
@@ -33,9 +33,9 @@ module.exports = {
     },
     async editPost(id, updatedPost) {
         try {
-            let updPost = await db.posts.update({ _id: id },{ $set: updatedPost })
+            let updPost = await db.post.updateOne({ _id: id },{ $set: updatedPost })
 
-            return updPost
+            return updPost.n
         } catch (error) {
             console.log(error)
             return false
@@ -43,9 +43,9 @@ module.exports = {
     },
     async deletePost(id) {
         try {
-            let delPost = await db.posts.remove({ _id: id })
+            let delPost = await db.post.deleteOne({ _id: id })
 
-            return delPost
+            return delPost.n
             
         } catch (error) {
             console.log(error)

@@ -23,7 +23,7 @@ module.exports = {
         } 
     },
     getPostComments: async (req, res) => {
-        let comments = await getAllComments({ blogPostId: req.params.id })
+        let comments = await getAllComments({ postId: req.params.id })
 
         if (comments) {
             res.status(200).json(comments)
@@ -39,7 +39,8 @@ module.exports = {
             ) {
             let blogPost = {
                 title: req.body.title,
-                content: req.body.content
+                content: req.body.content,
+                userId: req.body.userId
             }
 
             let success = await model.addPost(blogPost)
@@ -62,7 +63,8 @@ module.exports = {
 
             let updatedPost = {
                 title: req.body.title,
-                content: req.body.content
+                content: req.body.content,
+                userId: req.body.userId
             }
 
             let updPost = await model.editPost(req.params.id, updatedPost)
