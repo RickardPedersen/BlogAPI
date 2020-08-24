@@ -1,5 +1,5 @@
-const model = require('../models/posts.js')
-const { getAllComments } = require('../models/comments')
+const model = require('../models/post.js')
+const { getAllComments } = require('../models/comment')
 
 module.exports = {
     getAllPosts: async (req, res) => {

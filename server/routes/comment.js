@@ -1,4 +1,4 @@
-const controller = require('../controllers/comments.js')
+const controller = require('../controllers/comment.js')
 const {Router} = require('express')
 
 const router = new Router()

@@ -9,8 +9,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
 //routes
-const posts = require('./routes/posts')
-const comments = require('./routes/comments')
+const posts = require('./routes/post')
+const comments = require('./routes/comment')
 app.use('/posts', posts)
 app.use('/comments', comments)
 
