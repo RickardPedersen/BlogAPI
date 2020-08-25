@@ -59,3 +59,4 @@ $RECYCLE.BIN/
 
 /client
 node_modules
+.env

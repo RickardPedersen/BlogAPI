@@ -11,9 +11,9 @@ module.exports = {
             return false
         }
     },
-    async getUser(id) {
+    async getUser(filter) {
         try {
-            let user = await db.user.findOne({ _id: id})
+            let user = await db.user.findOne(filter)
 
             return user 
         } catch (error) {

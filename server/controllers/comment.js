@@ -23,16 +23,12 @@ module.exports = {
     },
     addComment: async (req, res) => {
         if (req.body.hasOwnProperty('text') &&
-            req.body.hasOwnProperty('postId') &&
-            req.body.hasOwnProperty('userId') &&
-            typeof req.body.text === 'string'&&
-            typeof req.body.postId === 'string'&&
-            typeof req.body.userId === 'string'
+            req.body.hasOwnProperty('postId')
             ) {
             let comment = {
                 text: req.body.text,
                 postId: req.body.postId,
-                userId: req.body.userId
+                userId: req.user.userId
             }
 
             let success = await model.addComment(comment)
@@ -47,12 +43,10 @@ module.exports = {
         } 
     },
     editComment: async (req, res) => {
-        if (req.body.hasOwnProperty('text') &&
-            typeof req.body.text === 'string'
-            ) {
+        if (req.body.hasOwnProperty('text')) {
 
             let updatedComment = {
-                text: req.body.text,
+                text: req.body.text
             }
 
             let updPost = await model.editComment(req.params.id, updatedComment)

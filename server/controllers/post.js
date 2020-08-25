@@ -33,14 +33,12 @@ module.exports = {
     },
     addPost: async (req, res) => {
         if (req.body.hasOwnProperty('title') &&
-            req.body.hasOwnProperty('content') &&
-            typeof req.body.title === 'string'&&
-            typeof req.body.content === 'string'
+            req.body.hasOwnProperty('content')
             ) {
             let blogPost = {
                 title: req.body.title,
                 content: req.body.content,
-                userId: req.body.userId
+                userId: req.user.userId
             }
 
             let success = await model.addPost(blogPost)
@@ -55,16 +53,18 @@ module.exports = {
         } 
     },
     editPost: async (req, res) => {
-        if (req.body.hasOwnProperty('title') &&
-            req.body.hasOwnProperty('content') &&
-            typeof req.body.title === 'string'&&
-            typeof req.body.content === 'string'
+        if (req.body.hasOwnProperty('title') ||
+            req.body.hasOwnProperty('content')
             ) {
 
-            let updatedPost = {
-                title: req.body.title,
-                content: req.body.content,
-                userId: req.body.userId
+            let updatedPost = {}
+
+            if (req.body.hasOwnProperty('title')) {
+                updatedPost.title = req.body.title
+            }
+
+            if (req.body.hasOwnProperty('content')) {
+                updatedPost.content = req.body.content
             }
 
             let updPost = await model.editPost(req.params.id, updatedPost)

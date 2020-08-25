@@ -1,6 +1,11 @@
 const model = require('../models/user.js')
 const { getAllComments } = require('../models/comment')
 const { getAllPosts } = require('../models/post')
+const bcrypt = require('bcryptjs')
+
+function hashPassword(password) {
+    return bcrypt.hashSync(password, 10)
+}
 
 module.exports = {
     getAllUsers: async (req, res) => {
@@ -13,12 +18,13 @@ module.exports = {
         } 
     },
     getUser: async (req, res) => {
-        let blogPost = await model.getUser(req.params.id)
 
-        if (blogPost) {
+        let user = await model.getUser({ _id: req.params.id })
+
+        if (user) {
     
-            console.log(blogPost)
-            res.status(200).json(blogPost)
+            console.log(user)
+            res.status(200).json(user)
         } else {
             res.status(404).send('Not Found')
         } 
@@ -43,14 +49,13 @@ module.exports = {
     },
     addUser: async (req, res) => {
         if (req.body.hasOwnProperty('username') &&
-            req.body.hasOwnProperty('password') &&
-            typeof req.body.username === 'string'&&
-            typeof req.body.password === 'string'
+            req.body.hasOwnProperty('password')
             ) {
             let user = {
                 username: req.body.username,
-                password: req.body.password,
+                password: hashPassword(req.body.password),
             }
+            console.log(user)
 
             let success = await model.addUser(user)
 
@@ -64,15 +69,16 @@ module.exports = {
         } 
     },
     editUser: async (req, res) => {
-        if (req.body.hasOwnProperty('username') &&
-            req.body.hasOwnProperty('password') &&
-            typeof req.body.username === 'string'&&
-            typeof req.body.password === 'string'
+        if (req.body.hasOwnProperty('username') ||
+            req.body.hasOwnProperty('password') 
             ) {
+            let updatedUser = {}
 
-            let updatedUser = {
-                username: req.body.username,
-                password: req.body.password
+            if (req.body.hasOwnProperty('username')) {
+                updatedUser.username = req.body.username
+            }
+            if (req.body.hasOwnProperty('password')) {
+                updatedUser.password = req.body.password
             }
 
             let updUser = await model.editUser(req.params.id, updatedUser)
