@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 const secret = process.env.SECRET
+const {getPost} = require('../models/post.js')
+const {getComment} = require('../models/comment.js')
 
 module.exports = {
     auth: (req, res, next) => {
@@ -26,13 +28,43 @@ module.exports = {
         }
     },
     checkUserId: (req, res, next) => {
-        // TODO: better checks, req to db to get id
         if (req.user.userId === req.body.userId || req.user.userId === req.params.id) {
             console.log('correct user')
             next()
         } else {
             console.log('wrong user')
             res.sendStatus(403)
+        }
+    },
+    checkPostUserId: async (req, res, next) => {
+        let post = await getPost(req.params.id)
+        console.log(post)
+        if (post) {
+            if (req.user.userId === post.userId) {
+                console.log('correct user')
+                next()
+            } else {
+                console.log('wrong user')
+                res.sendStatus(403)
+            }
+        } else {
+            res.sendStatus(404)
+        }
+    },
+    checkCommentUserId: async (req, res, next) => {
+        let comment = await getComment(req.params.id)
+        console.log(comment)
+
+        if (comment) {
+            if (req.user.userId === comment.userId) {
+                console.log('correct user')
+                next()
+            } else {
+                console.log('wrong user')
+                res.sendStatus(403)
+            }
+        } else {
+            res.sendStatus(404)
         }
     }
 }
