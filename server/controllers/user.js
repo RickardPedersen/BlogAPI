@@ -78,7 +78,7 @@ module.exports = {
                 updatedUser.username = req.body.username
             }
             if (req.body.hasOwnProperty('password')) {
-                updatedUser.password = req.body.password
+                updatedUser.password = hashPassword(req.body.password)
             }
 
             let updUser = await model.editUser(req.params.id, updatedUser)
