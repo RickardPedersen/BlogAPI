@@ -49,11 +49,13 @@ module.exports = {
     },
     addUser: async (req, res) => {
         if (req.body.hasOwnProperty('username') &&
-            req.body.hasOwnProperty('password')
+            req.body.hasOwnProperty('password') &&
+            req.body.hasOwnProperty('role')
             ) {
             let user = {
                 username: req.body.username,
                 password: hashPassword(req.body.password),
+                role: req.body.role
             }
             console.log(user)
 
@@ -69,6 +71,10 @@ module.exports = {
         } 
     },
     editUser: async (req, res) => {
+        let user = await model.getUser({ _id: req.params.id })
+        if (!user) { return res.sendStatus(404) }
+        if (!req.user.owns(user)) { return res.sendStatus(401) }
+
         if (req.body.hasOwnProperty('username') ||
             req.body.hasOwnProperty('password') 
             ) {
@@ -95,6 +101,11 @@ module.exports = {
         }
     },
     deleteUser: async (req, res) => {
+        let user = await model.getUser({ _id: req.params.id })
+        console.log(user)
+        if (!user) { return res.sendStatus(404) }
+        if (!req.user.is(user)) { return res.sendStatus(401) }
+
         let delPost = await model.deleteUser(req.params.id)
 
         if (delPost === 0) {

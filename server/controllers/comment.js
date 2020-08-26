@@ -2,7 +2,19 @@ const model = require('../models/comment.js')
 
 module.exports = {
     getAllComments: async (req, res) => {
-        let results = await model.getAllComments({})
+        let results = []
+        console.log(req.user.role)
+        //const readAny = ac.can(req.user.role).readAny('comment');
+        //const readOwn = ac.can(req.user.role).readOwn('comment');
+        //console.log(permission.granted)
+
+        if (req.user.role === 'admin') {
+            results = await model.getAllComments({})
+        } else if (req.user.role === 'user') {
+            results = await model.getAllComments({userId: req.user.userId})
+        } else {
+            return res.sendStatus(403)
+        }
 
         if (results) {
             res.status(200).json(results)
@@ -11,12 +23,12 @@ module.exports = {
         } 
     },
     getComment: async (req, res) => {
-        let comments = await model.getComment(req.params.id)
+        let comment = await model.getComment(req.params.id)
 
-        if (comments) {
+        if (comment) {
     
-            console.log(comments)
-            res.status(200).json(comments)
+            console.log(comment)
+            res.status(200).json(comment)
         } else {
             res.status(404).send('Not Found')
         } 
@@ -43,6 +55,10 @@ module.exports = {
         } 
     },
     editComment: async (req, res) => {
+        let comment = await model.getComment(req.params.id)
+        if (!comment) { return res.sendStatus(404) }
+        if (!req.user.owns(comment)) { return res.sendStatus(401) }
+
         if (req.body.hasOwnProperty('text')) {
 
             let updatedComment = {
@@ -63,6 +79,10 @@ module.exports = {
         }
     },
     deleteComment: async (req, res) => {
+        let comment = await model.getComment(req.params.id)
+        if (!comment) { return res.sendStatus(404) }
+        if (!req.user.owns(comment)) { return res.sendStatus(401) }
+
         let delcomment = await model.deleteComment(req.params.id)
 
         if (delcomment === 0) {

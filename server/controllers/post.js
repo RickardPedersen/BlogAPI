@@ -3,8 +3,16 @@ const { getAllComments } = require('../models/comment')
 
 module.exports = {
     getAllPosts: async (req, res) => {
-        let results = await model.getAllPosts({})
-
+        let results = []
+        console.log(req.user.role)
+        if (req.user.role === 'admin') {
+            results = await model.getAllPosts({})
+        } else if(req.user.role === 'user'){
+            results = await model.getAllPosts({userId: req.user.userId})
+        } else {
+            return res.sendStatus(403)
+        }
+        
         if (results) {
             res.status(200).json(results)
         } else {
@@ -53,6 +61,10 @@ module.exports = {
         } 
     },
     editPost: async (req, res) => {
+        let blogPost = await model.getPost(req.params.id)
+        if (!blogPost) { return res.sendStatus(404) }
+        if (!req.user.owns(blogPost)) { return res.sendStatus(401) }
+
         if (req.body.hasOwnProperty('title') ||
             req.body.hasOwnProperty('content')
             ) {
@@ -81,6 +93,10 @@ module.exports = {
         }
     },
     deletePost: async (req, res) => {
+        let blogPost = await model.getPost(req.params.id)
+        if (!blogPost) { return res.sendStatus(404) }
+        if (!req.user.owns(blogPost)) { return res.sendStatus(401) }
+
         let delPost = await model.deletePost(req.params.id)
 
         if (delPost === 0) {

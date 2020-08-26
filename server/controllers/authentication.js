@@ -15,7 +15,7 @@ module.exports = {
         if (user) {
             const correctPassword = bcrypt.compareSync(req.body.password, user.password)
             if (correctPassword) {
-                let token = createToken({ userId: user._id })
+                let token = createToken({ userId: user._id, role: user.role })
                 console.log(token)
                 res.status(200).json(token)
             } else {

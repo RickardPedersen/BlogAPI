@@ -1,13 +1,13 @@
 const controller = require('../controllers/comment.js')
 const {Router} = require('express')
-const {auth, checkCommentUserId} = require('../middlewares/authorization')
+const {user} = require('../middlewares/authorization')
 
 const router = new Router()
 
-router.get('/', controller.getAllComments)
+router.get('/', user, controller.getAllComments)
 router.get('/:id', controller.getComment)
-router.post('/', auth, controller.addComment)
-router.patch('/:id', auth, checkCommentUserId, controller.editComment)
-router.delete('/:id', auth, checkCommentUserId, controller.deleteComment)
+router.post('/', user, controller.addComment)
+router.patch('/:id', user, controller.editComment)
+router.delete('/:id', user, controller.deleteComment)
 
 module.exports = router

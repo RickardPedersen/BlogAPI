@@ -1,4 +1,6 @@
+const jwt = require('jsonwebtoken')
 const db = require('../database/dbSetup')
+const { verify } = require('jsonwebtoken')
 
 module.exports = {
     async getAllUsers() {
@@ -9,6 +11,15 @@ module.exports = {
         } catch (error) {
             console.log(error)
             return false
+        }
+    },
+    async verifyToken(token) {
+        const payload = jwt.verify(token, process.env.SECRET)
+        return {
+            ...payload,
+
+            owns(document) { return document.userId === this.userId },
+            is(user) { return user._id == this.userId }
         }
     },
     async getUser(filter) {

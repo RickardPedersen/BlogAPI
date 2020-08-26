@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken')
 const secret = process.env.SECRET
-const {getPost} = require('../models/post.js')
-const {getComment} = require('../models/comment.js')
+const {verifyToken} = require('../models/user.js')
+//const {getComment} = require('../models/comment.js')
 
 module.exports = {
-    auth: (req, res, next) => {
+    user: async (req, res, next) => {
         if (!req.headers.authorization) {
             return res.sendStatus(403)
         }
@@ -13,8 +13,7 @@ module.exports = {
         console.log(token)
     
         try {
-            const payload = jwt.verify(token, secret)
-            req.user = payload
+            req.user = await verifyToken(token)
             next()
         } catch (error) {
             if (error instanceof jwt.TokenExpiredError) {
@@ -27,44 +26,32 @@ module.exports = {
             }
         }
     },
-    checkUserId: (req, res, next) => {
-        if (req.user.userId === req.body.userId || req.user.userId === req.params.id) {
-            console.log('correct user')
-            next()
-        } else {
-            console.log('wrong user')
-            res.sendStatus(403)
+    admin: async (req, res, next) => {
+        if (!req.headers.authorization) {
+            return res.sendStatus(403)
         }
-    },
-    checkPostUserId: async (req, res, next) => {
-        let post = await getPost(req.params.id)
-        console.log(post)
-        if (post) {
-            if (req.user.userId === post.userId) {
-                console.log('correct user')
+    
+        const token = req.headers.authorization.replace("Bearer ", "")
+        console.log(token)
+    
+        try {
+            req.user = await verifyToken(token)
+            if (req.user.role === 'admin') {
                 next()
             } else {
-                console.log('wrong user')
-                res.sendStatus(403)
+                throw new Error('Not Admin')
             }
-        } else {
-            res.sendStatus(404)
-        }
-    },
-    checkCommentUserId: async (req, res, next) => {
-        let comment = await getComment(req.params.id)
-        console.log(comment)
-
-        if (comment) {
-            if (req.user.userId === comment.userId) {
-                console.log('correct user')
-                next()
+        } catch (error) {
+            if (error instanceof jwt.TokenExpiredError) {
+                res.status(403).send('Your token has expired')
+            } else if (error.message === 'invalid token') {
+                res.status(403).send(error.message)
+            } else if (error.message === 'Not Admin') {
+                res.status(401).send(error.message)
             } else {
-                console.log('wrong user')
-                res.sendStatus(403)
+                console.log(error)
+                res.sendStatus(500) 
             }
-        } else {
-            res.sendStatus(404)
         }
     }
 }
