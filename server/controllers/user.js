@@ -73,7 +73,7 @@ module.exports = {
     editUser: async (req, res) => {
         let user = await model.getUser({ _id: req.params.id })
         if (!user) { return res.sendStatus(404) }
-        if (!req.user.owns(user)) { return res.sendStatus(401) }
+        if (!req.user.is(user)) { return res.sendStatus(401) }
 
         if (req.body.hasOwnProperty('username') ||
             req.body.hasOwnProperty('password') 

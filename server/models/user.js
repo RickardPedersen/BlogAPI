@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const db = require('../database/dbSetup')
-const { verify } = require('jsonwebtoken')
+//const { verify } = require('jsonwebtoken')
 
 module.exports = {
     async getAllUsers() {
@@ -17,9 +17,9 @@ module.exports = {
         const payload = jwt.verify(token, process.env.SECRET)
         return {
             ...payload,
-
             owns(document) { return document.userId === this.userId },
-            is(user) { return user._id == this.userId }
+            is(user) { return user._id.toString() === this.userId },
+            isAdmin() { return this.role === 'admin' }
         }
     },
     async getUser(filter) {
