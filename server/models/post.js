@@ -1,10 +1,18 @@
 const db = require('../database/dbSetup')
 
 module.exports = {
+    async count(filter) {
+        try {
+            return await db.post.countDocuments(filter)
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    },
     async getAllPosts(filter) {
         try {
             let result = await db.post.find(filter)
-            console.log(result)
+            //console.log(result)
             return result
         } catch (error) {
             console.log(error)

@@ -32,6 +32,14 @@ module.exports = {
             return false
         }
     },
+    async getPostOwner (post) {
+        try {
+            return await db.user.findOne({_id: post.userId})
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    },
     async addUser(user) {
         try {
             await db.user.create(user)
