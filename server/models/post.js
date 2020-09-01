@@ -11,9 +11,7 @@ module.exports = {
     },
     async getAllPosts(filter) {
         try {
-            let result = await db.post.find(filter)
-            //console.log(result)
-            return result
+            return await db.post.find(filter)
         } catch (error) {
             console.log(error)
             return false
@@ -21,9 +19,15 @@ module.exports = {
     },
     async getPost(id) {
         try {
-            let blogPost = await db.post.findOne({ _id: id})
-
-            return blogPost 
+            return await db.post.findOne({ _id: id})
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    },
+    async search(filter) {
+        try {
+            return await db.post.find(filter)
         } catch (error) {
             console.log(error)
             return false
@@ -32,7 +36,6 @@ module.exports = {
     async addPost(blogPost) {
         try {
             await db.post.create(blogPost)
-
             return true
         } catch (error) {
             console.log(error)
@@ -42,7 +45,6 @@ module.exports = {
     async editPost(id, updatedPost) {
         try {
             let updPost = await db.post.updateOne({ _id: id },{ $set: updatedPost })
-
             return updPost.n
         } catch (error) {
             console.log(error)
@@ -52,9 +54,7 @@ module.exports = {
     async deletePost(id) {
         try {
             let delPost = await db.post.deleteOne({ _id: id })
-
             return delPost.n
-            
         } catch (error) {
             console.log(error)
             return false
