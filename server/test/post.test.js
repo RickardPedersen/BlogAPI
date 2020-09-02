@@ -30,7 +30,6 @@ describe('Count number of posts', () => {
 
     it('should return the number of posts in the db', async () => {
         
-        
         // Arrange
         const user = await getUser({username: 'Amanda'})
         const firstPost = {
