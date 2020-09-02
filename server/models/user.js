@@ -46,8 +46,8 @@ module.exports = {
     },
     async addUser(user) {
         try {
-            await db.user.create(user)
-            return true
+            return await db.user.create(user)
+            // return true
         } catch (error) {
             console.log(error)
             return false
@@ -71,5 +71,26 @@ module.exports = {
             console.log(error)
             return false
         }
-    }
+    },
+    async clearAllUsers () {
+        try {
+            return await db.user.remove({})
+        } catch (error) {
+            return error
+        }
+    },
+    async searchUser(regex) {
+        const searchQuery = {
+            $or: [
+                { title: regex },
+                { content: regex }
+            ]
+        }
+        try {
+            return await db.user.find(searchQuery)
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    },
 }

@@ -2,7 +2,9 @@ const chai = require('chai')
 chai.should()
 
 const {
-    addUser
+    addUser,
+    clearAllUsers,
+    searchUser
 } = require('../models/user')
 
 describe('Add user', () => {
@@ -11,12 +13,19 @@ describe('Add user', () => {
     })
     
     it('should create new user to testdb', async () => {
+        //Arrange
         const firstUser = {
             username: "Amanda",
             password: "Amanda",
-            role: "member"
+            role: "admin"
         }
+    
+        //Act
         const result = await addUser(firstUser)
+    
+        //Assert
+        result.should.be.deep.an('object')
+    
     })
 })
 
@@ -29,7 +38,7 @@ describe('Searching for users', () => {
         const regex = new RegExp(searchText, 'i')
 
         //Act
-        const users = await searchUsers(regex)
+        const users = await searchUser(regex)
 
         //Assert
         users.should.be.an('array')

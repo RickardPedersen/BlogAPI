@@ -3,7 +3,8 @@ chai.should()
 
 // user model
 const {
-    getCommentOwner
+    getCommentOwner,
+    getUser
 } = require('../models/user')
 
 // comment model
@@ -24,15 +25,16 @@ describe('Count number of comments', () => {
     
     it('should return the number of comments in the db', async () => {
         // Arrange
+        const user = await getUser({username: 'Amanda'})
         const firstComment = {
             text: 'firstposttotest123123',
             postId: '5f4f5e2d1c3d0d17341f78c1',
-            userId: '5f4f5e2d1c3d0d17341f78c1'
+            userId: user._id
         }
         const secondComment = {
             text: 'haha',
             postId: '5f4f5e2d1c3d0d17341f78c1',
-            userId: '5f4f5e2d1c3d0d17341f78c1'
+            userId: user._id
         }
 
         // Act
@@ -50,10 +52,11 @@ describe('Count number of comments', () => {
 describe('Find comment owner', () => {
     it('should return the comment owners user document from db', async () => {
         // Arrange
+        const user = await getUser({username: 'Amanda'})
         const firstComment = {
             text: 'hej',
             postId: '5f4f5e2d1c3d0d17341f78c1',
-            userId: '5f4f5e2d1c3d0d17341f78c1'
+            userId: user._id
         }
     
         // Act
@@ -87,10 +90,11 @@ describe('Search comments', () => {
 describe('Comment text type check', () => {
     it('Should be a string', async () => {
         // Arrange
+        const user = await getUser({username: 'Amanda'})
         const thirdComment = {
             text: 'hejhej',
             postId: '5f4f5e2d1c3d0d17341f78c1',
-            userId: '5f4f5e2d1c3d0d17341f78c1'
+            userId: user._id
         }
     
         // Act

@@ -3,7 +3,8 @@ chai.should()
 
 // user model
 const {
-    getPostOwner
+    getPostOwner,
+    getUser
 } = require('../models/user')
 
 // post model
@@ -28,18 +29,21 @@ describe('Count number of posts', () => {
     
 
     it('should return the number of posts in the db', async () => {
+        
+        
         // Arrange
+        const user = await getUser({username: 'Amanda'})
         const firstPost = {
             title: 'bra',
             content: 'firstcontenttotest123123',
-            userId: '5f4f5e2d1c3d0d17341f78c1'
+            userId: user._id
         }
 
         // Act
         const sucess = await addPost(firstPost)
         const numberOfPosts = await count({})
         const posts = await getAllPosts({})
-        
+
         // Assert
         numberOfPosts.should.be.a('number')
         numberOfPosts.should.equal(posts.length)
@@ -48,11 +52,13 @@ describe('Count number of posts', () => {
 
 describe('Find post owner', () => {
     it('should return the post owners user document from db', async () => {
+        
         // Arrange
+        const user = await getUser({username: 'Amanda'})
         const secondPost = {
             title: 'bra jobbat',
             content: 'firstcontenttotest123123',
-            userId: '5f4f5e2d1c3d0d17341f78c1'
+            userId: user._id
         }
 
         // Act
