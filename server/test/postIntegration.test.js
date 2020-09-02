@@ -32,8 +32,8 @@ describe('Posts integration test', () => {
             .set('Content-Type', 'application/json')
             .send(fields)
             .end((err, res) => {
-                expect(res).to.have.status(201)
-                expect(res).to.be.json
+                res.should.have.status(201)
+                res.should.be.json
                 res.body.should.have.keys(['__v', '_id', 'title', 'content', 'userId', 'createdAt', 'updatedAt'])
             })
     })
