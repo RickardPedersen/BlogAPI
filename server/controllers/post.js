@@ -1,7 +1,21 @@
 const model = require('../models/post.js')
-const { getAllComments } = require('../models/comment')
+const { getAllComments } = require('../models/comment');
+const { searchUser } = require('../models/user.js');
 
 module.exports = {
+    getSearchedPosts: async (req, res) => {
+        const searchText = req.query.searchText;
+        const regex = new RegExp(searchText, 'i')
+        const result = await model.search(regex)
+        console.log(result)
+        if(result) {
+            res.status(200).json(result)
+        } else {
+            console.log('no bro')
+            res.status(400)
+        }
+        
+    },
     getAllPosts: async (req, res) => {
         let results = []
         console.log(req.user.role)

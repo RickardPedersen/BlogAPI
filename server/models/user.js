@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken')
-const db = require('../database/dbSetup')
+const {user, connect} = require('../database/dbSetup')
+connect()
 //const { verify } = require('jsonwebtoken')
 
 module.exports = {
     async getAllUsers() {
         try {
-            return await db.user.find({})
+            return await user.find({})
         } catch (error) {
             console.log(error)
             return false
@@ -22,7 +23,7 @@ module.exports = {
     },
     async getUser(filter) {
         try {
-            return await db.user.findOne(filter)
+            return await user.findOne(filter)
         } catch (error) {
             console.log(error)
             return false
@@ -30,7 +31,7 @@ module.exports = {
     },
     async getPostOwner (post) {
         try {
-            return await db.user.findOne({_id: post.userId})
+            return await user.findOne({_id: post.userId})
         } catch (error) {
             console.log(error)
             return false
@@ -38,15 +39,15 @@ module.exports = {
     },
     async getCommentOwner (comment) {
         try {
-            return await db.user.findOne({_id: comment.userId})
+            return await user.findOne({_id: comment.userId})
         } catch (error) {
             console.log(error)
             return false
         }
     },
-    async addUser(user) {
+    async addUser(newUser) {
         try {
-            return await db.user.create(user)
+            return await user.create(newUser)
             // return true
         } catch (error) {
             console.log(error)
@@ -55,7 +56,7 @@ module.exports = {
     },
     async editUser(id, updatedUser) {
         try {
-            let updPost = await db.user.updateOne({ _id: id },{ $set: updatedUser })
+            let updPost = await user.updateOne({ _id: id },{ $set: updatedUser })
             return updPost.n
         } catch (error) {
             console.log(error)
@@ -64,7 +65,7 @@ module.exports = {
     },
     async deleteUser(id) {
         try {
-            let delUsers = await db.user.deleteOne({ _id: id })
+            let delUsers = await user.deleteOne({ _id: id })
             return delUsers.n
             
         } catch (error) {
@@ -73,11 +74,7 @@ module.exports = {
         }
     },
     async clearAllUsers () {
-        try {
-            return await db.user.remove({})
-        } catch (error) {
-            return error
-        }
+        return await user.remove({})
     },
     async searchUser(regex) {
         const searchQuery = {
@@ -87,7 +84,7 @@ module.exports = {
             ]
         }
         try {
-            return await db.user.find(searchQuery)
+            return await user.find(searchQuery)
         } catch (error) {
             console.log(error)
             return false

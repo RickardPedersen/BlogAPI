@@ -10,13 +10,15 @@ function createToken(payload) {
 module.exports = {
     login: async (req, res) =>{
         let user = await getUser({ username: req.body.username })
-        console.log(user)
-
+        // console.log(user)
+      
         if (user) {
             const correctPassword = bcrypt.compareSync(req.body.password, user.password)
             if (correctPassword) {
+               
                 let token = createToken({ userId: user._id, role: user.role })
-                console.log(token)
+                //console.log(token)
+                console.log('now we sending back token')
                 res.status(200).json(token)
             } else {
                 res.status(403).send('Wrong Password')

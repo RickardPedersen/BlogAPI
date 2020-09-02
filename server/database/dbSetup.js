@@ -1,20 +1,23 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-switch(process.env.ENVIRONMENT) {
-    case 'test':
-        mongoose.connect('mongodb://localhost:27017/BlogDBTest', { useNewUrlParser: true, useUnifiedTopology: true })
-    break;
-    case 'development':
-        mongoose.connect('mongodb://localhost:27017/BlogDB', { useNewUrlParser: true, useUnifiedTopology: true })
-    break;
+function connect () {
+    return new Promise((resolve, reject) => {
+        switch(process.env.ENVIRONMENT) {
+            case 'test':
+                mongoose.connect('mongodb://localhost:27017/BlogDBTest', { useNewUrlParser: true, useUnifiedTopology: true })
+            break;
+            case 'development':
+                mongoose.connect('mongodb://localhost:27017/BlogDB', { useNewUrlParser: true, useUnifiedTopology: true })
+            break;
+        }
+        if(!mongoose.connection) {
+            console.log("error bro")
+            // throw new MongooseError('Could not connect to database')
+        }
+        resolve()
+    })
 }
-
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'))
-db.once('open', function() {
-  console.log('Connected to db')
-});
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -71,7 +74,7 @@ const user = mongoose.model('user', userSchema)
 const post = mongoose.model('post', postSchema)
 const comment = mongoose.model('comment', commentSchema)
 
-module.exports = {user, post, comment}
+module.exports = {user, post, comment, connect}
 
 
 
