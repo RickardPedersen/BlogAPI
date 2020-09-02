@@ -46,8 +46,7 @@ module.exports = {
     },
     async addUser(user) {
         try {
-            await db.user.create(user)
-            return true
+            return await db.user.create(user)
         } catch (error) {
             console.log(error)
             return false

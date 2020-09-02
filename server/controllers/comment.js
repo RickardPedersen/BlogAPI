@@ -27,7 +27,6 @@ module.exports = {
 
         if (comment) {
     
-            console.log(comment)
             res.status(200).json(comment)
         } else {
             res.status(404).send('Not Found')

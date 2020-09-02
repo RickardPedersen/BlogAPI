@@ -1,63 +1,103 @@
 const chai = require('chai')
 chai.should()
+const bcrypt = require('bcryptjs')
+const db = require('../database/dbSetup')
 
-// user model
-const {
-    getPostOwner
-} = require('../models/user')
+const userModel = require('../models/user')
+const postModel = require('../models/post')
+//const commentModel = require('../models/comment')
 
-// post model
-const {
-    count,
-    getPost,
-    getAllPosts,
-    search
-} = require('../models/post')
+describe('Post Model', () => {
+    beforeEach(() => {
+        db.db.dropDatabase((err, result) => {})
+    })
 
-describe('Count number of posts', () => {
     it('should return the number of posts in the db', async () => {
         // Arrange
-        const posts = await getAllPosts({})
+        const user = await userModel.addUser({username: 'TestUser1', password: bcrypt.hashSync('123', 10), role: 'user'})
+
+        let blogPost = {
+            title: 'TestPost',
+            content: 'TestContent',
+            userId: user._id
+        }
+
+        await postModel.addPost(blogPost)
+        await postModel.addPost(blogPost)
+        await postModel.addPost(blogPost)
+        await postModel.addPost(blogPost)
+        await postModel.addPost(blogPost)
+
+        //const posts = await getAllPosts({})
 
         // Act
-        const numberOfPosts = await count({})
+        const numberOfPosts = await postModel.count({})
 
         // Assert
         numberOfPosts.should.be.a('number')
-        numberOfPosts.should.equal(posts.length)
+        numberOfPosts.should.equal(5)
     })
-})
 
-describe('Find post owner', () => {
+    
     it('should return the post owners user document from db', async () => {
         // Arrange
-        const post = await getPost('5f465fd689c11c7da4aaf1bf')
+        const user = await userModel.addUser({username: 'TestUser1', password: bcrypt.hashSync('123', 10), role: 'user'})
+
+        let blogPost = {
+            title: 'TestPost',
+            content: 'TestContent',
+            userId: user._id
+        }
+
+        const post = await postModel.addPost(blogPost)
         
         // Act
-        const owner = await getPostOwner(post)
+        const owner = await userModel.getPostOwner(post)
 
         // Assert
         owner._id.toString().should.equal(post.userId)
     })
-})
 
-describe('Search posts', () => {
     it('should return all posts that match the search query', async () => {
         // Arrange
-        const text = 'bra'
-        const regex = new RegExp(text, 'i')
-        const searchQuery = {
-            $or: [
-                { title: regex },
-                { content: regex }
-            ]
+        const user = await userModel.addUser({username: 'TestUser1', password: bcrypt.hashSync('123', 10), role: 'user'})
+
+        let blogPost = {
+            title: 'TestPost',
+            content: 'TestContent',
+            userId: user._id
         }
+        let blogPost2 = {
+            title: 'blabla',
+            content: 'asdkjfhgk',
+            userId: user._id
+        }
+        let blogPost3 = {
+            title: 'asdfasdf',
+            content: 'TestContent',
+            userId: user._id
+        }
+        let blogPost4 = {
+            title: 'Testar',
+            content: 'sdfgsfdgsdfg',
+            userId: user._id
+        }
+
+        await postModel.addPost(blogPost)
+        await postModel.addPost(blogPost3)
+        await postModel.addPost(blogPost4)
+        await postModel.addPost(blogPost2)
+        await postModel.addPost(blogPost2)
+
+        const text = 'test'
+        const regex = new RegExp(text, 'i')
         
         // Act
-        const posts = await search(searchQuery)
+        const posts = await postModel.search(regex)
 
         // Assert
         posts.should.be.an('array')
+        posts.length.should.equal(3)
         for (const post of posts) {
             post.should.have.property('title')
             post.should.have.property('content')

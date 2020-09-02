@@ -22,8 +22,6 @@ module.exports = {
         let user = await model.getUser({ _id: req.params.id })
 
         if (user) {
-    
-            console.log(user)
             res.status(200).json(user)
         } else {
             res.status(404).send('Not Found')
@@ -57,7 +55,6 @@ module.exports = {
                 password: hashPassword(req.body.password),
                 role: req.body.role
             }
-            console.log(user)
 
             let success = await model.addUser(user)
 
@@ -102,7 +99,6 @@ module.exports = {
     },
     deleteUser: async (req, res) => {
         let user = await model.getUser({ _id: req.params.id })
-        console.log(user)
         if (!user) { return res.sendStatus(404) }
         if (!req.user.is(user)) { return res.sendStatus(401) }
 

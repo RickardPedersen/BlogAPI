@@ -27,7 +27,7 @@ module.exports = {
     },
     async search(filter) {
         try {
-            return await db.comment.find(filter)  
+            return await db.comment.find({text: filter})  
         } catch (error) {
             console.log(error)
             return false
@@ -35,8 +35,8 @@ module.exports = {
     },
     async addComment(comment) {
         try {
-            await db.comment.create(comment)
-            return true
+            
+            return await db.comment.create(comment)
         } catch (error) {
             console.log(error)
             return false

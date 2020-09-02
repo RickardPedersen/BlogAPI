@@ -1,5 +1,25 @@
+require('dotenv').config()
+
+let databaseName = 'BlogDB'
+
+switch(process.env.ENVIRONMENT) {
+    case 'dev':
+        databaseName = 'BlogDB_dev'
+        break;
+    
+    case 'test':
+        databaseName = 'BlogDB_test'
+        break;
+
+    case 'prod':
+        databaseName = 'BlogDB_test'
+        break;
+
+    default:
+        databaseName = 'BlogDB'
+}
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/BlogDB', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(`mongodb://localhost:27017/${databaseName}`, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'))
@@ -62,7 +82,7 @@ const user = mongoose.model('user', userSchema)
 const post = mongoose.model('post', postSchema)
 const comment = mongoose.model('comment', commentSchema)
 
-module.exports = {user, post, comment}
+module.exports = {db, user, post, comment}
 
 
 

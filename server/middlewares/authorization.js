@@ -10,7 +10,6 @@ module.exports = {
         }
     
         const token = req.headers.authorization.replace("Bearer ", "")
-        console.log(token)
     
         try {
             req.user = await verifyToken(token)
@@ -32,7 +31,6 @@ module.exports = {
         }
     
         const token = req.headers.authorization.replace("Bearer ", "")
-        console.log(token)
     
         try {
             req.user = await verifyToken(token)

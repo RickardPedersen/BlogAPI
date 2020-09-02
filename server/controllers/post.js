@@ -4,7 +4,6 @@ const { getAllComments } = require('../models/comment')
 module.exports = {
     getAllPosts: async (req, res) => {
         let results = []
-        console.log(req.user.role)
         if (req.user.role === 'admin') {
             results = await model.getAllPosts({})
         } else if(req.user.role === 'user'){
@@ -24,7 +23,6 @@ module.exports = {
 
         if (blogPost) {
     
-            console.log(blogPost)
             res.status(200).json(blogPost)
         } else {
             res.status(404).send('Not Found')
