@@ -25,9 +25,15 @@ module.exports = {
             return false
         }
     },
-    async search(filter) {
+    async search(regex) {
+        const searchQuery = {
+            $or: [
+                { title: regex },
+                { content: regex }
+            ]
+        }
         try {
-            return await db.post.find(filter)
+            return await db.post.find(searchQuery)
         } catch (error) {
             console.log(error)
             return false
@@ -35,7 +41,7 @@ module.exports = {
     },
     async addPost(blogPost) {
         try {
-            await db.post.create(blogPost)
+            return await db.post.create(blogPost)
             return true
         } catch (error) {
             console.log(error)
@@ -58,6 +64,13 @@ module.exports = {
         } catch (error) {
             console.log(error)
             return false
+        }
+    },
+    async clearAllPosts() {
+        try {
+            return await db.post.remove({})
+        } catch (error) {
+            return error
         }
     }
 }

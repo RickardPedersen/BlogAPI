@@ -1,5 +1,14 @@
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/BlogDB', { useNewUrlParser: true, useUnifiedTopology: true })
+require('dotenv').config()
+
+switch(process.env.ENVIRONMENT) {
+    case 'test':
+        mongoose.connect('mongodb://localhost:27017/BlogDBTest', { useNewUrlParser: true, useUnifiedTopology: true })
+    break;
+    case 'development':
+        mongoose.connect('mongodb://localhost:27017/BlogDB', { useNewUrlParser: true, useUnifiedTopology: true })
+    break;
+}
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'))

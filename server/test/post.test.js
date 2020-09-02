@@ -11,17 +11,35 @@ const {
     count,
     getPost,
     getAllPosts,
-    search
+    search,
+    addPost,
+    clearAllPosts
 } = require('../models/post')
 
+ // const post = require('../models/post')
+
 describe('Count number of posts', () => {
+    /**
+     * Clear all data
+     */
+    beforeEach(async () => {
+        await clearAllPosts()
+    })
+    
+
     it('should return the number of posts in the db', async () => {
         // Arrange
-        const posts = await getAllPosts({})
+        const firstPost = {
+            title: 'bra',
+            content: 'firstcontenttotest123123',
+            userId: '5f4f5e2d1c3d0d17341f78c1'
+        }
 
         // Act
+        const sucess = await addPost(firstPost)
         const numberOfPosts = await count({})
-
+        const posts = await getAllPosts({})
+        
         // Assert
         numberOfPosts.should.be.a('number')
         numberOfPosts.should.equal(posts.length)
@@ -31,9 +49,15 @@ describe('Count number of posts', () => {
 describe('Find post owner', () => {
     it('should return the post owners user document from db', async () => {
         // Arrange
-        const post = await getPost('5f465fd689c11c7da4aaf1bf')
-        
+        const secondPost = {
+            title: 'bra jobbat',
+            content: 'firstcontenttotest123123',
+            userId: '5f4f5e2d1c3d0d17341f78c1'
+        }
+
         // Act
+        const result = await addPost(secondPost)
+        const post = await getPost(result._id)
         const owner = await getPostOwner(post)
 
         // Assert
@@ -46,15 +70,9 @@ describe('Search posts', () => {
         // Arrange
         const text = 'bra'
         const regex = new RegExp(text, 'i')
-        const searchQuery = {
-            $or: [
-                { title: regex },
-                { content: regex }
-            ]
-        }
         
         // Act
-        const posts = await search(searchQuery)
+        const posts = await search(regex)
 
         // Assert
         posts.should.be.an('array')
@@ -65,3 +83,5 @@ describe('Search posts', () => {
         }
     })
 })
+
+

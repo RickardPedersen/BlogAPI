@@ -25,9 +25,11 @@ module.exports = {
             return false
         }
     },
-    async search(filter) {
+    async search(regex) {
+        const searchQuery = { text: regex }
+        console.log(searchQuery)
         try {
-            return await db.comment.find(filter)  
+            return await db.comment.find(searchQuery)  
         } catch (error) {
             console.log(error)
             return false
@@ -35,8 +37,8 @@ module.exports = {
     },
     async addComment(comment) {
         try {
-            await db.comment.create(comment)
-            return true
+            return db.comment.create(comment)
+            // return true
         } catch (error) {
             console.log(error)
             return false
@@ -58,6 +60,13 @@ module.exports = {
         } catch (error) {
             console.log(error)
             return false
+        }
+    },
+    async clearAllComments () {
+        try {
+            return await db.comment.remove({})
+        } catch (error) {
+            return error
         }
     }
 }
