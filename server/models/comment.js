@@ -1,9 +1,17 @@
-const db = require('../database/dbSetup')
+const {comment, connect} = require('../database/dbSetup')
+connect()
 
 module.exports = {
+    async clear() {
+        try {
+            await comment.collection.drop()
+        } catch (error) {
+            console.log(error)
+        }
+    },
     async count(filter) {
         try {
-            return await db.comment.countDocuments(filter)
+            return await comment.countDocuments(filter)
         } catch (error) {
             console.log(error)
             return false
@@ -11,7 +19,7 @@ module.exports = {
     },
     async getAllComments(filter) {
         try {
-            return await db.comment.find(filter)
+            return await comment.find(filter)
         } catch (error) {
             console.log(error)
             return false
@@ -19,7 +27,7 @@ module.exports = {
     },
     async getComment(id) {
         try {
-            return await db.comment.findOne({ _id: id })
+            return await comment.findOne({ _id: id })
         } catch (error) {
             console.log(error)
             return false
@@ -27,16 +35,15 @@ module.exports = {
     },
     async search(filter) {
         try {
-            return await db.comment.find({text: filter})  
+            return await comment.find({text: filter})  
         } catch (error) {
             console.log(error)
             return false
         }
     },
-    async addComment(comment) {
+    async addComment(commentObject) {
         try {
-            
-            return await db.comment.create(comment)
+            return await comment.create(commentObject)
         } catch (error) {
             console.log(error)
             return false
@@ -44,7 +51,7 @@ module.exports = {
     },
     async editComment(id, updatedComment) {
         try {
-            let updComment = await db.comment.updateOne({ _id: id }, { $set: updatedComment })
+            let updComment = await comment.updateOne({ _id: id }, { $set: updatedComment })
             return updComment.n
         } catch (error) {
             console.log(error)
@@ -53,7 +60,7 @@ module.exports = {
     },
     async deleteComment(id) {
         try {
-            let delComment = await db.comment.deleteOne({ _id: id })
+            let delComment = await comment.deleteOne({ _id: id })
             return delComment.n
         } catch (error) {
             console.log(error)

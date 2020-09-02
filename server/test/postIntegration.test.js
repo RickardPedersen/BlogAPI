@@ -6,14 +6,19 @@ const {expect, request} = chai
 const app = require('../server')
 
 const bcrypt = require('bcryptjs')
-const TestDB = require('../database/dbSetup')
+const {connect, disconnect} = require('../database/dbSetup')
 
 const userModel = require('../models/user')
 const postModel = require('../models/post')
 
 describe('Posts integration test', () => {
+    before(async () => {
+        await connect()
+    })
+
     beforeEach(async function() {
-        await TestDB.db.dropDatabase((err, result) => {})
+        await userModel.clear()
+        await postModel.clear()
         const user = await userModel.addUser({
             username: 'TestUser1',
             password: bcrypt.hashSync('123', 10),
@@ -81,5 +86,9 @@ describe('Posts integration test', () => {
                     post.should.satisfy(() => { return regex.test(post.title) || regex.test(post.content) })
                 }
             })
+    })
+
+    after(() => {
+        disconnect()
     })
 })

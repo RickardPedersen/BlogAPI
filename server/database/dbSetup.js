@@ -1,31 +1,24 @@
 require('dotenv').config()
-
-let databaseName = 'BlogDB'
-
-switch(process.env.ENVIRONMENT) {
-    case 'dev':
-        databaseName = 'BlogDB_dev'
-        break;
-    
-    case 'test':
-        databaseName = 'BlogDB_test'
-        break;
-
-    case 'prod':
-        databaseName = 'BlogDB_test'
-        break;
-
-    default:
-        databaseName = 'BlogDB'
-}
 const mongoose = require('mongoose')
-mongoose.connect(`mongodb://localhost:27017/${databaseName}`, { useNewUrlParser: true, useUnifiedTopology: true })
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'))
-db.once('open', function() {
-  console.log('Connected to db')
-});
+async function connect() {
+    try {
+        await mongoose.connect(`mongodb://localhost:27017/BlogDB_${process.env.ENVIRONMENT}`, { useNewUrlParser: true, useUnifiedTopology: true })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+function disconnect() {
+    mongoose.connection.close(() => {
+        console.log('Mongoose connection closed')
+    })
+}
+
+mongoose.connection.on('error', console.error.bind(console, 'connection error:'))
+mongoose.connection.once('open', function() {
+  console.log(`Connected to ${process.env.ENVIRONMENT} db`)
+})
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -82,16 +75,4 @@ const user = mongoose.model('user', userSchema)
 const post = mongoose.model('post', postSchema)
 const comment = mongoose.model('comment', commentSchema)
 
-module.exports = {db, user, post, comment}
-
-
-
-/*
-const Datastore = require('nedb-promises')
-let db = {}
-db.posts = Datastore.create('server/database/posts')
-db.comments = Datastore.create('server/database/comments')
-db.posts.load()
-db.comments.load()
-
-module.exports = db*/
+module.exports = {user, post, comment, connect, disconnect}

@@ -1,16 +1,21 @@
 const chai = require('chai')
 chai.should()
 const bcrypt = require('bcryptjs')
-const db = require('../database/dbSetup')
+const {connect, disconnect} = require('../database/dbSetup')
 
 const userModel = require('../models/user')
 const postModel = require('../models/post')
 const commentModel = require('../models/comment')
 
 describe('Comment Model', () => {
-    beforeEach(() => {
-        db.db.dropDatabase((err, result) => {})
+    before(async () => {
+        await connect()
     })
+
+    beforeEach(async () => {
+        await commentModel.clear()
+    })
+
     it('should return the number of comments in the db', async () => {
         // Arrange
         const user = await userModel.addUser({username: 'TestUser1', password: bcrypt.hashSync('123', 10), role: 'user'})
@@ -112,5 +117,9 @@ describe('Comment Model', () => {
             comment.should.have.property('text')
             comment.text.should.match(regex)
         }
+    })
+
+    after(() => {
+        disconnect()
     })
 })

@@ -1,9 +1,17 @@
-const db = require('../database/dbSetup')
+const {post, connect} = require('../database/dbSetup')
+connect()
 
 module.exports = {
+    async clear() {
+        try {
+            await post.collection.drop()
+        } catch (error) {
+            console.log(error)
+        }
+    },
     async count(filter) {
         try {
-            return await db.post.countDocuments(filter)
+            return await post.countDocuments(filter)
         } catch (error) {
             console.log(error)
             return false
@@ -11,7 +19,7 @@ module.exports = {
     },
     async getAllPosts(filter) {
         try {
-            return await db.post.find(filter)
+            return await post.find(filter)
         } catch (error) {
             console.log(error)
             return false
@@ -19,7 +27,7 @@ module.exports = {
     },
     async getPost(id) {
         try {
-            return await db.post.findOne({ _id: id})
+            return await post.findOne({ _id: id})
         } catch (error) {
             console.log(error)
             return false
@@ -33,7 +41,7 @@ module.exports = {
                     { content: regex }
                 ]
             }
-            return await db.post.find(searchQuery)
+            return await post.find(searchQuery)
         } catch (error) {
             console.log(error)
             return false
@@ -42,7 +50,7 @@ module.exports = {
     async addPost(blogPost) {
         try {
             
-            return await db.post.create(blogPost)
+            return await post.create(blogPost)
         } catch (error) {
             console.log(error)
             return false
@@ -50,7 +58,7 @@ module.exports = {
     },
     async editPost(id, updatedPost) {
         try {
-            let updPost = await db.post.updateOne({ _id: id },{ $set: updatedPost })
+            let updPost = await post.updateOne({ _id: id },{ $set: updatedPost })
             return updPost.n
         } catch (error) {
             console.log(error)
@@ -59,7 +67,7 @@ module.exports = {
     },
     async deletePost(id) {
         try {
-            let delPost = await db.post.deleteOne({ _id: id })
+            let delPost = await post.deleteOne({ _id: id })
             return delPost.n
         } catch (error) {
             console.log(error)

@@ -1,15 +1,19 @@
 const chai = require('chai')
 chai.should()
 const bcrypt = require('bcryptjs')
-const db = require('../database/dbSetup')
+const {connect, disconnect} = require('../database/dbSetup')
 
 const userModel = require('../models/user')
 const postModel = require('../models/post')
 //const commentModel = require('../models/comment')
 
 describe('Post Model', () => {
-    beforeEach(() => {
-        db.db.dropDatabase((err, result) => {})
+    before(async () => {
+        await connect()
+    })
+
+    beforeEach(async () => {
+        await postModel.clear()
     })
 
     it('should return the number of posts in the db', async () => {
@@ -103,5 +107,9 @@ describe('Post Model', () => {
             post.should.have.property('content')
             post.should.satisfy(() => { return regex.test(post.title) || regex.test(post.content) })
         }
+    })
+
+    after(() => {
+        disconnect()
     })
 })
