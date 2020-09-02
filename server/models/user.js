@@ -1,8 +1,46 @@
 const jwt = require('jsonwebtoken')
 const db = require('../database/dbSetup')
-//const { verify } = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
+
+function createToken(payload) {
+    return jwt.sign(payload, process.env.SECRET, { expiresIn:'1h' })
+}
 
 module.exports = {
+    async authenticate(username, password) {
+        try {
+            let user = await db.user.findOne({username})
+            if (!user) {
+                return {
+                    success: false,
+                    token: null,
+                    error: 'wrong username'
+                }
+            }
+
+            const correctPassword = bcrypt.compareSync(password, user.password)
+            if (correctPassword) {
+                return {
+                    success: true,
+                    token: createToken({ userId: user._id, role: user.role }),
+                    error: null
+                }
+            } else {
+                return {
+                    success: false,
+                    token: null,
+                    error: 'wrong password'
+                }
+            }
+        } catch (error) {
+            console.log(error)
+            return {
+                success: false,
+                token: null,
+                error: 'server error'
+            }
+        }
+    },
     async getAllUsers() {
         try {
             return await db.user.find({})

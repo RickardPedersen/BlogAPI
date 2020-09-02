@@ -1,4 +1,4 @@
-const { getUser } = require('../models/user')
+const { getUser, authenticate } = require('../models/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const secret = process.env.SECRET
@@ -9,20 +9,17 @@ function createToken(payload) {
 
 module.exports = {
     login: async (req, res) =>{
-        let user = await getUser({ username: req.body.username })
+        let result = await authenticate(req.body.username, req.body.password)
+        console.log(result)
 
-        if (user) {
-            const correctPassword = bcrypt.compareSync(req.body.password, user.password)
-            if (correctPassword) {
-                let token = createToken({ userId: user._id, role: user.role })
-                res.status(200).json(token)
-            } else {
-                res.status(403).send('Wrong Password')
-            }
-    
-            //res.status(200).json(user)
+        if (result.success) {
+            res.status(200).json(result.token)
+        } else if (result.error === 'wrong password') {
+            res.status(403).send('Wrong Password')
+        } else if (result.error === 'wrong username') {
+            res.status(404).send('Username Not Found')
         } else {
-            res.status(404).send('Not Found')
-        } 
+            res.sendStatus(500)
+        }
     }
 }

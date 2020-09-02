@@ -5,6 +5,7 @@ const {user, admin} = require('../middlewares/authorization')
 const router = new Router()
 
 router.get('/', user, controller.getAllPosts)
+router.get('/search', user, controller.searchPosts)
 router.get('/:id', controller.getPost)
 router.get('/:id/comments', controller.getPostComments)
 router.post('/', user, controller.addPost)

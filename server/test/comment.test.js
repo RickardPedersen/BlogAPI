@@ -64,7 +64,6 @@ describe('Comment Model', () => {
         
         // Act
         const owner = await userModel.getCommentOwner(comment)
-        console.log(owner)
         // Assert
         owner.should.be.an('object')
         owner._id.toString().should.equal(comment.userId)

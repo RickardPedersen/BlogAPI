@@ -3,10 +3,6 @@ const model = require('../models/comment.js')
 module.exports = {
     getAllComments: async (req, res) => {
         let results = []
-        console.log(req.user.role)
-        //const readAny = ac.can(req.user.role).readAny('comment');
-        //const readOwn = ac.can(req.user.role).readOwn('comment');
-        //console.log(permission.granted)
 
         if (req.user.role === 'admin') {
             results = await model.getAllComments({})

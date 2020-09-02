@@ -2,6 +2,15 @@ const model = require('../models/post.js')
 const { getAllComments } = require('../models/comment')
 
 module.exports = {
+    searchPosts: async (req, res) => {
+        const regex = new RegExp(req.query.query, 'i')
+        let results = await model.search(regex)
+        if (results) {
+            res.status(200).json(results)
+        } else {
+            res.sendStatus(404)
+        }
+    },
     getAllPosts: async (req, res) => {
         let results = []
         if (req.user.role === 'admin') {
@@ -46,14 +55,15 @@ module.exports = {
                 content: req.body.content,
                 userId: req.user.userId
             }
+            //console.log(req.user)
 
-            let success = await model.addPost(blogPost)
+            let newPost = await model.addPost(blogPost)
 
-            if (success) {
-                res.status(201).send('Created')
-            } else {
-                res.status(500).send('Something went wrong')
-            }
+            res.status(201).json(newPost)
+            // if (typeof success === 'object') {
+            // } else {
+            //     res.status(500).send('Something went wrong')
+            // }
         } else {
             res.status(400).send('Bad Request')
         } 
