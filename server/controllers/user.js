@@ -46,23 +46,24 @@ module.exports = {
         }
     },
     addUser: async (req, res) => {
+        console.log(req.body)
         if (req.body.hasOwnProperty('username') &&
-            req.body.hasOwnProperty('password') &&
-            req.body.hasOwnProperty('role')
+            req.body.hasOwnProperty('password')
             ) {
             let user = {
                 username: req.body.username,
                 password: hashPassword(req.body.password),
-                role: req.body.role
+                role: 'user'
             }
 
             let success = await model.addUser(user)
+            res.status(201).json(success)
 
-            if (success) {
-                res.status(201).send('Created')
-            } else {
-                res.status(500).send('Something went wrong')
-            }
+            // if (success) {
+            //     res.status(201).send('Created')
+            // } else {
+            //     res.status(500).send('Something went wrong')
+            // }
         } else {
             res.status(400).send('Bad Request')
         } 

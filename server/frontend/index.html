@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+    <div id="app">
+        <div>
+            <form id="createForm" action="">
+                <h1>Create Account</h1>
+                <input type="text" id="newUsername">
+                <br>
+                <br>
+                <input type="password" id="newPassword">
+                <br>
+                <br>
+                <button type="submit" id="createBtn">Create account</button>
+            </form>
+    
+            <form id="loginForm" action="" class="hidden">
+                <h1>Log in</h1>
+                <input type="text" id="username">
+                <br>
+                <br>
+                <input type="password" id="password">
+                <br>
+                <br>
+                <button type="submit" id="loginBtn">Login</button>
+            </form>
+        </div>
+        <div id="createSwitch">
+            <p>Already have an account?</p>
+            <button id="switchToLogin">Login</button>
+        </div>
+        <div id="loginSwitch"  class="hidden">
+            <p>Don't have an account?</p>
+            <button id="switchToCreate">Create account</button>
+        </div>
+    </div>
+
+    <script type="module" src="/scripts/dom.js"></script>
+</body>
+</html>

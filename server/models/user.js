@@ -92,7 +92,9 @@ module.exports = {
     },
     async addUser(userObject) {
         try {
-            return await user.create(userObject)
+            const test = await user.create(userObject)
+            console.log(test)
+            return test
         } catch (error) {
             console.log(error)
             return false

@@ -19,5 +19,10 @@ app.use('/posts', posts)
 app.use('/comments', comments)
 app.use('/users', users)
 app.use('/authentication', authentication)
+app.use('/', express.static(__dirname + '/frontend'))
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/frontend/index.html')
+})
 
 module.exports = app
